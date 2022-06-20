@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import ContactList from "./components/Contacts/ContactList";
+import AddContact from "./components/Contacts/AddContact/AddContact";
 
 
 function App() {
@@ -16,16 +17,14 @@ function App() {
             const data = await response.json();
             applyData(data);
         } catch (e) {
-            console.log(e.message)
+            console.log(e.message);
         }
-
     }, []);
 
     useEffect(() => {
         const transformContacts = (contacts) => {
             const transformedContacts = [];
             for(const key in contacts) {
-                console.log(key);
                 transformedContacts.push({
                     id: contacts[key].id,
                     image: contacts[key].image,
@@ -42,12 +41,21 @@ function App() {
         fetchContacts(transformContacts);
     }, [fetchContacts]);
 
-    console.log(contacts);
+    const handleDeleteContact = (id) => {
+        setContacts(contacts.filter(contact => {
+            return contact.id !== id;
+        }));
+    }
 
     return (
-        <ContactList
-        contacts={contacts}
-        />
+        <div>
+            <AddContact/>
+            <ContactList
+                contacts={contacts}
+                onDeleteContact={handleDeleteContact}
+            />
+        </div>
+
     );
 }
 
